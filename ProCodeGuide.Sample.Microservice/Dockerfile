@@ -1,10 +1,20 @@
-FROM registry.access.redhat.com/ubi8/dotnet-31:3.1
+FROM registry.access.redhat.com/ubi8/dotnet-31-runtime:3.1 AS base
 USER 1001
-RUN mkdir sample-ms
-WORKDIR sample-ms
-ADD . .
+WORKDIR /app
+EXPOSE 80
 
-RUN dotnet publish -c Release
+FROM registry.access.redhat.com/ubi8/dotnet-31:3.1 AS build
+WORKDIR /src
+COPY ["ProCodeGuide.Sample.Microservice/ProCodeGuide.Sample.Microservice.csproj", "ProCodeGuide.Sample.Microservice/"]
+RUN dotnet restore "ProCodeGuide.Sample.Microservice/ProCodeGuide.Sample.Microservice.csproj"
+COPY . .
+WORKDIR "/src/ProCodeGuide.Sample.Microservice"
+RUN dotnet build "ProCodeGuide.Sample.Microservice.csproj" -c Release -o /app/build
 
-EXPOSE 8080
-ENTRYPOINT ["dotnet", "./bin/Release/netcoreapp3.0/publish/ProCodeGuide.Sample.Microservice.dll"]
+FROM build AS publish
+RUN dotnet publish "ProCodeGuide.Sample.Microservice.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "ProCodeGuide.Sample.Microservice.dll"]
