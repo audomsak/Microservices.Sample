@@ -5,10 +5,10 @@ EXPOSE 80
 
 FROM registry.access.redhat.com/ubi8/dotnet-31:3.1 AS build
 WORKDIR /src
-COPY ["ProCodeGuide.Sample.Microservice/ProCodeGuide.Sample.Microservice.csproj", "ProCodeGuide.Sample.Microservice/"]
-RUN dotnet restore "ProCodeGuide.Sample.Microservice/ProCodeGuide.Sample.Microservice.csproj"
 COPY . .
-WORKDIR "/src/ProCodeGuide.Sample.Microservice"
+WORKDIR /src/ProCodeGuide.Sample.Microservice
+RUN dotnet restore "ProCodeGuide.Sample.Microservice.csproj"
+
 RUN dotnet build "ProCodeGuide.Sample.Microservice.csproj" -c Release -o /app/build
 
 FROM build AS publish
