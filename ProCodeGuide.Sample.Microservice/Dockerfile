@@ -9,8 +9,8 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-nanoserver-sac2016 AS build
 WORKDIR /src
-COPY ["ProCodeGuide.Sample.Microservice/ProCodeGuide.Sample.Microservice.csproj", "ProCodeGuide.Sample.Microservice/"]
-RUN dotnet restore "ProCodeGuide.Sample.Microservice/ProCodeGuide.Sample.Microservice.csproj"
+COPY ["ProCodeGuide.Sample.Microservice.csproj", "ProCodeGuide.Sample.Microservice/"]
+RUN dotnet restore "ProCodeGuide.Sample.Microservice.csproj"
 COPY . .
 WORKDIR "/src/ProCodeGuide.Sample.Microservice"
 RUN dotnet build "ProCodeGuide.Sample.Microservice.csproj" -c Release -o /app/build
