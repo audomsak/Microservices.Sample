@@ -7,12 +7,12 @@ FROM registry.access.redhat.com/ubi8/dotnet-31:3.1 AS build
 WORKDIR /src
 COPY . .
 WORKDIR /src/ProCodeGuide.Sample.Microservice
-RUN dotnet restore "ProCodeGuide.Sample.Microservice.csproj"
+RUN dotnet restore
 
-RUN dotnet build "ProCodeGuide.Sample.Microservice.csproj" -c Release -o /app/build
+RUN dotnet build -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "ProCodeGuide.Sample.Microservice.csproj" -c Release -o /app/publish
+RUN dotnet publish -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
